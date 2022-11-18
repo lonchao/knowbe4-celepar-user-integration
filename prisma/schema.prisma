@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:dev.db"
+}
+
+model CeleparUsers {
+  id           String @id
+  accountLid   String
+  accountDn    String
+  accountCn    String
+  accountMail  String
+  accountCpf   String
+  accountRG    String
+  accountRgUF  String
+  accountPhoto String
+
+  @@map("celepar_users")
+}
+
+model ApiUsers {
+  id         String   @id @default(uuid())
+  username   String   @unique
+  password   String
+  created_at DateTime @default(now())
+
+  @@map("api_users")
+}
+
+model Knowbe4Users {
+  id                 String @id
+  email              String
+  firstName          String
+  lastName           String
+  phoneNumber        String
+  mobilePhoneNumber  String
+  location           String
+  jobTitle           String
+  division           String
+  employeeNumber     String
+  organization       String
+  department         String
+  managerDisplayName String
+  managerEmail       String
+
+  @@map("knowbe4_users")
+}
+
+model Logs {
+  id         String   @id @default(uuid())
+  request    String
+  reponse    String
+  created_at DateTime @default(now())
+
+  @@map("logs")
+}
