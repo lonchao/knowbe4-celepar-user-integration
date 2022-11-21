@@ -8,7 +8,7 @@ export class CreateUserUseCase {
   async execute({ username, password }: ICreateUser) {
     const userExists = await prisma.apiUsers.findFirst({
       where: {
-        username: {},
+        username,
       },
     });
 
