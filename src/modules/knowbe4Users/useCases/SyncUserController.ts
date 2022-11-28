@@ -33,7 +33,6 @@ export class SyncUserController {
       value: "POC KB4 GSEG",
     });
 
-    console.log(result.length);
     if (result && result.length > 0) {
       const promisses: any[] = [];
 
