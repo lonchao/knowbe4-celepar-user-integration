@@ -6,6 +6,7 @@ declare namespace NodeJS {
     CELEPAR_BASE_URL: string;
     KNOWBE4_USERNAME: string;
     KNOWBE4_PASSWORD: string;
+    KNOWBE4_TOKEN: string;
     KNOWBE4_BASE_URL: string;
   }
 }
