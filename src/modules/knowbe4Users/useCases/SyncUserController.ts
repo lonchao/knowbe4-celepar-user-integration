@@ -30,7 +30,7 @@ export class SyncUserController {
     const result = await searchUsersUseCase.execute({
       celepar_token: auth.token,
       field: "name",
-      value: "a",
+      value: "POC KB4 GSEG",
     });
 
     if (result && result.length > 0) {
@@ -76,6 +76,6 @@ export class SyncUserController {
       return response.json({ message: `${result.length} synced`, responses });
     }
 
-    return response.json({ message: `${result.length} synced` });
+    return response.json({ message: `not synced`, result });
   }
 }
