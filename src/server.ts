@@ -1,3 +1,4 @@
+require("dotenv").config();
 import express, { Request, NextFunction, Response, json } from "express";
 import "express-async-errors";
 import { routes } from "./routes";
@@ -20,6 +21,6 @@ app.use(
   }
 );
 
-app.listen(3000, () => {
-  console.log("Server is running");
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`Server is running on ${process.env.PORT || 3000}`);
 });
