@@ -43,7 +43,7 @@ export class SyncUserController {
       const promisses: any[] = [];
       const execute = async (user: ICeleparUser) => {
         if (user.accountMail) {
-          console.log("user.accountMail", user.accountMail);
+          // console.log("user.accountMail", user.accountMail);
           const searchUserKnowbe4 = new SearchUserKnowbe4();
           const userKnowbe4 = await searchUserKnowbe4.execute({
             username: user.accountMail,
