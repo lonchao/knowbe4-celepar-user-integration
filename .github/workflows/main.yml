@@ -21,13 +21,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-
-      - name: npm install, build
-        run: |
-          npm install
-          npx prisma generate
-          npm run build
-
+      - run: npm install
+      - run: npm run prisma
+      - run: npm run build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2

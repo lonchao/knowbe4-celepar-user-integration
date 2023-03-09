@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node-dev --exit-child --transpile-only --ignore-watch node_modules src/server.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "prisma": "prisma generate"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
