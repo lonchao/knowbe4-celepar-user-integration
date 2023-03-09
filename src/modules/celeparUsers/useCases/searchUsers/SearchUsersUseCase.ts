@@ -24,6 +24,10 @@ export class SearchUsersUseCase {
       label: "rg",
       field: "accountSearchRG",
     },
+    {
+      label: "uid",
+      field: "accountSearchUID",
+    },
   ];
   async execute({ celepar_token, field, value }: ISearchUser) {
     const selectedField = this.fields.find((item) => {

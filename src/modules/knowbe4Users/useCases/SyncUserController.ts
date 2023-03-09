@@ -29,46 +29,49 @@ export class SyncUserController {
     const searchUsersUseCase = new SearchUsersUseCase();
     let result = await searchUsersUseCase.execute({
       celepar_token: auth.token,
-      field: "name",
-      value: "a",
+      field: "uid",
+      value: "*",
     });
 
     if (result.entries) {
+      console.log("result.entries");
       result = Object.keys(result.entries).map(function (key, index) {
         return result.entries[key];
       });
     }
     if (result && result.length > 0) {
       const promisses: any[] = [];
-
       const execute = async (user: ICeleparUser) => {
-        const searchUserKnowbe4 = new SearchUserKnowbe4();
-        const userKnowbe4 = await searchUserKnowbe4.execute({
-          username: user.accountMail,
-        });
-        const nameSplitted = SplitName(user.accountCn);
-        if (userKnowbe4) {
-          //update
-          const updateUserKnowbe4 = new UpdateUserKnowbe4();
-          updateUserKnowbe4.execute({
+        if (user.accountMail) {
+          console.log("user.accountMail", user.accountMail);
+          const searchUserKnowbe4 = new SearchUserKnowbe4();
+          const userKnowbe4 = await searchUserKnowbe4.execute({
             username: user.accountMail,
-            firstname: nameSplitted.firstName,
-            lastname: nameSplitted.lastName,
-            externalId: user.accountId,
-            knowbe4Id: userKnowbe4.id || "",
           });
+          const nameSplitted = SplitName(user.accountCn);
+          if (userKnowbe4) {
+            //update
+            const updateUserKnowbe4 = new UpdateUserKnowbe4();
+            updateUserKnowbe4.execute({
+              username: user.accountMail,
+              firstname: nameSplitted.firstName,
+              lastname: nameSplitted.lastName,
+              externalId: user.accountId,
+              knowbe4Id: userKnowbe4.id || "",
+            });
 
-          return `updated ${user.accountId}`;
-        } else {
-          //create
-          const createUserKnowbe4 = new CreateUserKnowbe4();
-          createUserKnowbe4.execute({
-            username: user.accountMail,
-            firstname: nameSplitted.firstName,
-            lastname: nameSplitted.lastName,
-            externalId: user.accountId,
-          });
-          return `created ${user.accountId}`;
+            return `updated ${user.accountId}`;
+          } else {
+            //create
+            const createUserKnowbe4 = new CreateUserKnowbe4();
+            createUserKnowbe4.execute({
+              username: user.accountMail,
+              firstname: nameSplitted.firstName,
+              lastname: nameSplitted.lastName,
+              externalId: user.accountId,
+            });
+            return `created ${user.accountId}`;
+          }
         }
       };
 
