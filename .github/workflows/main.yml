@@ -48,8 +48,8 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'celepar-knowbe4-ldap'
+          app-name: 'celepar-knowbe4-connector'
           slot-name: 'production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: .
-          # startup-command: 'pm2 start dist/server.js --name celepar-knowbe4'
+          startup-command: 'pm2 start dist/server.js --name celepar-knowbe4'
