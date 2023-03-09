@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'celepar-knowbe4-ldap'
           slot-name: 'production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: .
