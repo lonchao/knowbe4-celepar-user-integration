@@ -30,7 +30,7 @@ export class SyncUserController {
     const result = await searchUsersUseCase.execute({
       celepar_token: auth.token,
       field: "name",
-      value: "POC KB4 GSEG",
+      value: "a",
     });
 
     if (result && result.length > 0) {
