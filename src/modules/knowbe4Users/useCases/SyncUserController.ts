@@ -27,12 +27,17 @@ export class SyncUserController {
     const authenticateCeleparUseCase = new AuthenticateCeleparUseCase();
     const auth = await authenticateCeleparUseCase.execute();
     const searchUsersUseCase = new SearchUsersUseCase();
-    const result = await searchUsersUseCase.execute({
+    let result = await searchUsersUseCase.execute({
       celepar_token: auth.token,
       field: "name",
-      value: "POC KB4 GSEG",
+      value: "a",
     });
 
+    if (result.entries) {
+      result = Object.keys(result.entries).map(function (key, index) {
+        return result.entries[key];
+      });
+    }
     if (result && result.length > 0) {
       const promisses: any[] = [];
 
