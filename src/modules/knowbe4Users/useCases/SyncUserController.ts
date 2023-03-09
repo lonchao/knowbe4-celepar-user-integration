@@ -29,8 +29,8 @@ export class SyncUserController {
     const searchUsersUseCase = new SearchUsersUseCase();
     let result = await searchUsersUseCase.execute({
       celepar_token: auth.token,
-      field: "uid",
-      value: "*",
+      field: "email",
+      value: "*@celepar.pr.gov.br",
     });
 
     if (result.entries) {
