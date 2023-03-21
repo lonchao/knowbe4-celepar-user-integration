@@ -1,0 +1,109 @@
+{
+	"info": {
+		"_postman_id": "8e173b07-8c08-47c0-98dc-c134f221c2b9",
+		"name": "Knowbe4 Celepar LDAP Sync API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22647577"
+	},
+	"item": [
+		{
+			"name": "Sync CELEPAR > Knowbe4",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImxvbmNoYW8iLCJpYXQiOjE2NzgzODQ5NTMsImV4cCI6MTY3ODQ3MTM1Mywic3ViIjoiN2RkZWJiMWUtZjMyZC00NTFkLWIxMjUtNTE5YmE5MTZlY2I1In0.5J2Nx-GzL32JxamZAg4mH4G-PaEhO9rj1AFNVmk5OLc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://celepar-knowbe4-connector.azurewebsites.net/sync",
+					"protocol": "https",
+					"host": [
+						"celepar-knowbe4-connector",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"sync"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"lonchao\",\n    \"password\":\"lc0101\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/user/",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"user",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authenticate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"lonchao\",\n    \"password\":\"senha\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://celepar-knowbe4-connector.azurewebsites.net/authenticate/",
+					"protocol": "https",
+					"host": [
+						"celepar-knowbe4-connector",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"authenticate",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
