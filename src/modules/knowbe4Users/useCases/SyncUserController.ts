@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import fs from "fs";
+
 import { AuthenticateCeleparUseCase } from "../../celeparUsers/useCases/authenticateCelepar/AuthenticateCeleparUseCase";
 import { SearchUsersUseCase } from "../../celeparUsers/useCases/searchUsers/SearchUsersUseCase";
 import { SearchUserUseCase as SearchUserKnowbe4 } from "./SearchUserUseCase";
@@ -6,6 +8,7 @@ import { UpdateUserUseCase as UpdateUserKnowbe4 } from "./UpdateUserUseCase";
 import { CreateUserUseCase as CreateUserKnowbe4 } from "./CreateUserUseCase";
 
 import SplitName from "../../../services/SplitName";
+import listUsersUpdated from "./updatedList.json";
 
 interface ICeleparUser {
   accountId: string;
@@ -27,23 +30,26 @@ export class SyncUserController {
     const authenticateCeleparUseCase = new AuthenticateCeleparUseCase();
     const auth = await authenticateCeleparUseCase.execute();
     const searchUsersUseCase = new SearchUsersUseCase();
-    let result = await searchUsersUseCase.execute({
-      celepar_token: auth.token,
-      field: "email",
-      value: "*@celepar.pr.gov.br",
-    });
+    // let result = await searchUsersUseCase.execute({
+    //   celepar_token: auth.token,
+    //   field: "email",
+    //   value: "*@celepar.pr.gov.br",
+    // });
 
-    if (result.entries) {
-      console.log("result.entries");
-      result = Object.keys(result.entries).map(function (key, index) {
-        return result.entries[key];
-      });
-    }
+    // if (result.entries) {
+    //   console.log("result.entries");
+    //   result = Object.keys(result.entries).map(function (key, index) {
+    //     return result.entries[key];
+    //   });
+    // }
+
+    const result = listUsersUpdated;
+    console.log(result.length);
     if (result && result.length > 0) {
       const promisses: any[] = [];
       const execute = async (user: ICeleparUser) => {
         if (user.accountMail) {
-          // console.log("user.accountMail", user.accountMail);
+          console.log("user.accountMail", user.accountMail);
           const searchUserKnowbe4 = new SearchUserKnowbe4();
           const userKnowbe4 = await searchUserKnowbe4.execute({
             username: user.accountMail,
