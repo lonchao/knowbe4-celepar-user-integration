@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AuthenticateCeleparUseCase } from "../../celeparUsers/useCases/authenticateCelepar/AuthenticateCeleparUseCase";
 import { SearchUsersUseCase } from "../../celeparUsers/useCases/searchUsers/SearchUsersUseCase";
+import { GetGroupUseCase } from "../../celeparUsers/useCases/getGroup/GetGroupUseCase";
 import { SearchUserUseCase as SearchUserKnowbe4 } from "./SearchUserUseCase";
 import { UpdateUserUseCase as UpdateUserKnowbe4 } from "./UpdateUserUseCase";
 import { CreateUserUseCase as CreateUserKnowbe4 } from "./CreateUserUseCase";
@@ -27,18 +28,61 @@ export class SyncUserController {
     const authenticateCeleparUseCase = new AuthenticateCeleparUseCase();
     const auth = await authenticateCeleparUseCase.execute();
     const searchUsersUseCase = new SearchUsersUseCase();
-    let result = await searchUsersUseCase.execute({
+    const getGroupUseCase = new GetGroupUseCase();
+    let resultGroup = await getGroupUseCase.execute({
       celepar_token: auth.token,
-      field: "email",
-      value: "*@celepar.pr.gov.br",
+      group_name: "grupo-celepar-ciber",
     });
 
-    if (result.entries) {
-      console.log("result.entries");
-      result = Object.keys(result.entries).map(function (key, index) {
-        return result.entries[key];
-      });
+    // let result = await searchUsersUseCase.execute({
+    //   celepar_token: auth.token,
+    //   field: "email",
+    //   value: "*@celepar.pr.gov.br",
+    // });
+    // if (result.entries) {
+    //   console.log("result.entries");
+    //   result = Object.keys(result.entries).map(function (key, index) {
+    //     return result.entries[key];
+    //   });
+    // }
+
+    const startTime = new Date();
+    console.log("resultGroup", resultGroup.length, startTime);
+
+    const promissesGroup: any[] = [];
+
+    function delay(time: number) {
+      return new Promise((resolve) => setTimeout(resolve, time));
     }
+
+    const executeSearch = async (accountUid: string, delayTime: number) => {
+      await delay(delayTime);
+      if (accountUid) {
+        console.log("executeSearch", accountUid, delayTime / 1000);
+        let result = await searchUsersUseCase.execute({
+          celepar_token: auth.token,
+          field: "uid",
+          value: accountUid,
+        });
+        return result.entries[0];
+      } else {
+        return {};
+      }
+    };
+    // resultGroup = [
+    //   resultGroup[1112],
+    //   resultGroup[1113],
+    //   resultGroup[1114],
+    //   resultGroup[1115],
+    // ];
+    console.log("resultGroup", resultGroup.length);
+    resultGroup.forEach((accountUid: string, index: number) => {
+      promissesGroup.push(executeSearch(accountUid, index * 1000));
+    });
+
+    const result = await Promise.all(promissesGroup);
+
+    console.log("result.entries after", result.length);
     if (result && result.length > 0) {
       const promisses: any[] = [];
       const execute = async (user: ICeleparUser) => {
@@ -81,9 +125,19 @@ export class SyncUserController {
 
       const responses = await Promise.all(promisses);
       //   console.log(responses);
-      return response.json({ message: `${result.length} synced`, responses });
+      return response.json({
+        message: `${result.length} synced`,
+        startTime,
+        endTime: new Date(),
+        responses,
+      });
     }
 
-    return response.json({ message: `not synced`, result });
+    return response.json({
+      message: `not synced`,
+      startTime,
+      endTime: new Date(),
+      result,
+    });
   }
 }
