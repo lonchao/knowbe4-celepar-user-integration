@@ -56,14 +56,22 @@ export class SyncUserController {
     }
 
     const executeSearch = async (accountUid: string, delayTime: number) => {
-      await delay(delayTime);
+      await delay(delayTime / 2);
       if (accountUid) {
-        console.log("executeSearch", accountUid, delayTime / 1000);
+        // console.log("executeSearch", accountUid, delayTime / 1000);
         let result = await searchUsersUseCase.execute({
           celepar_token: auth.token,
           field: "uid",
           value: accountUid,
         });
+
+        // if (result.entries[0].accountCn.indexOf("DESATIVADO") > -1) {
+        console.log(
+          accountUid,
+          result.entries[0].accountCn,
+          result.entries[0].accountMail
+        );
+        // }
         return result.entries[0];
       } else {
         return {};
@@ -86,6 +94,7 @@ export class SyncUserController {
     if (result && result.length > 0) {
       const promisses: any[] = [];
       const execute = async (user: ICeleparUser) => {
+        // console.log(user.accountCn,user.accountMail);
         if (user.accountMail) {
           // console.log("user.accountMail", user.accountMail);
           const searchUserKnowbe4 = new SearchUserKnowbe4();
@@ -103,7 +112,6 @@ export class SyncUserController {
               externalId: user.accountId,
               knowbe4Id: userKnowbe4.id || "",
             });
-
             return `updated ${user.accountId}`;
           } else {
             //create
