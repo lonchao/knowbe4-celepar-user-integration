@@ -55,8 +55,42 @@ export class SyncUserController {
       return new Promise((resolve) => setTimeout(resolve, time));
     }
 
+    const executeSync = async (user: ICeleparUser) => {
+      // console.log(user.accountCn,user.accountMail);
+      if (user.accountMail) {
+        // console.log("user.accountMail", user.accountMail);
+        const searchUserKnowbe4 = new SearchUserKnowbe4();
+        const userKnowbe4 = await searchUserKnowbe4.execute({
+          username: user.accountMail,
+        });
+        const nameSplitted = SplitName(user.accountCn);
+        if (userKnowbe4) {
+          //update
+          const updateUserKnowbe4 = new UpdateUserKnowbe4();
+          updateUserKnowbe4.execute({
+            username: user.accountMail,
+            firstname: nameSplitted.firstName,
+            lastname: nameSplitted.lastName,
+            externalId: user.accountId,
+            knowbe4Id: userKnowbe4.id || "",
+          });
+          return `updated ${user.accountId} ${user.accountCn} ${user.accountMail}`;
+        } else {
+          //create
+          const createUserKnowbe4 = new CreateUserKnowbe4();
+          createUserKnowbe4.execute({
+            username: user.accountMail,
+            firstname: nameSplitted.firstName,
+            lastname: nameSplitted.lastName,
+            externalId: user.accountId,
+          });
+          return `created ${user.accountId} ${user.accountCn} ${user.accountMail}`;
+        }
+      }
+    };
+
     const executeSearch = async (accountUid: string, delayTime: number) => {
-      await delay(delayTime / 5);
+      await delay(delayTime);
       if (accountUid) {
         // console.log("executeSearch", accountUid, delayTime / 1000);
         let result = await searchUsersUseCase.execute({
@@ -69,9 +103,11 @@ export class SyncUserController {
         console.log(
           accountUid,
           result.entries[0].accountCn,
-          result.entries[0].accountMail
+          result.entries[0].accountMail,
+          delayTime / 100
         );
         // }
+        return await executeSync(result.entries[0]);
         return result.entries[0];
       } else {
         return {};
@@ -85,67 +121,36 @@ export class SyncUserController {
     // ];
     console.log("resultGroup", resultGroup.length);
     resultGroup.forEach((accountUid: string, index: number) => {
-      promissesGroup.push(executeSearch(accountUid, index * 1000));
+      promissesGroup.push(executeSearch(accountUid, index * 500));
     });
 
-    const result = await Promise.all(promissesGroup);
+    Promise.all(promissesGroup);
+    // const result = await Promise.all(promissesGroup);
 
-    console.log("result.entries after", result.length);
-    if (result && result.length > 0) {
-      const promisses: any[] = [];
-      const execute = async (user: ICeleparUser) => {
-        // console.log(user.accountCn,user.accountMail);
-        if (user.accountMail) {
-          // console.log("user.accountMail", user.accountMail);
-          const searchUserKnowbe4 = new SearchUserKnowbe4();
-          const userKnowbe4 = await searchUserKnowbe4.execute({
-            username: user.accountMail,
-          });
-          const nameSplitted = SplitName(user.accountCn);
-          if (userKnowbe4) {
-            //update
-            const updateUserKnowbe4 = new UpdateUserKnowbe4();
-            updateUserKnowbe4.execute({
-              username: user.accountMail,
-              firstname: nameSplitted.firstName,
-              lastname: nameSplitted.lastName,
-              externalId: user.accountId,
-              knowbe4Id: userKnowbe4.id || "",
-            });
-            return `updated ${user.accountId}`;
-          } else {
-            //create
-            const createUserKnowbe4 = new CreateUserKnowbe4();
-            createUserKnowbe4.execute({
-              username: user.accountMail,
-              firstname: nameSplitted.firstName,
-              lastname: nameSplitted.lastName,
-              externalId: user.accountId,
-            });
-            return `created ${user.accountId}`;
-          }
-        }
-      };
+    // console.log("result.entries after", result.length);
+    // if (result && result.length > 0) {
+    //   const promisses: any[] = [];
 
-      result.forEach((user: ICeleparUser) => {
-        promisses.push(execute(user));
-      });
+    //   result.forEach((user: ICeleparUser) => {
+    //     promisses.push(execute(user));
+    //   });
 
-      const responses = await Promise.all(promisses);
-      //   console.log(responses);
-      return response.json({
-        message: `${result.length} synced`,
-        startTime,
-        endTime: new Date(),
-        responses,
-      });
-    }
+    //   const responses = await Promise.all(promisses);
+    //   //   console.log(responses);
+    //   return response.json({
+    //     message: `${result.length} synced`,
+    //     startTime,
+    //     endTime: new Date(),
+    //     responses,
+    //   });
+    // }
 
     return response.json({
-      message: `not synced`,
+      message: `started synced`,
       startTime,
-      endTime: new Date(),
-      result,
+      // endTime: new Date(),
+      results: resultGroup.length,
+      resultGroup: resultGroup,
     });
   }
 }
