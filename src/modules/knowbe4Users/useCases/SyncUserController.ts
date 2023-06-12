@@ -56,7 +56,7 @@ export class SyncUserController {
     }
 
     const executeSearch = async (accountUid: string, delayTime: number) => {
-      await delay(delayTime / 2);
+      await delay(delayTime / 3);
       if (accountUid) {
         // console.log("executeSearch", accountUid, delayTime / 1000);
         let result = await searchUsersUseCase.execute({
