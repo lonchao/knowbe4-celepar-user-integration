@@ -25,6 +25,8 @@ export class SyncUserController {
   async handle(request: Request, response: Response) {
     const { username, password } = request.body;
 
+    const startTime = new Date();
+    console.log("startTime", startTime);
     const authenticateCeleparUseCase = new AuthenticateCeleparUseCase();
     const auth = await authenticateCeleparUseCase.execute();
     const searchUsersUseCase = new SearchUsersUseCase();
@@ -46,7 +48,6 @@ export class SyncUserController {
     //   });
     // }
 
-    const startTime = new Date();
     console.log("resultGroup", resultGroup.length, startTime);
 
     const promissesGroup: any[] = [];
@@ -57,7 +58,7 @@ export class SyncUserController {
 
     const executeSync = async (user: ICeleparUser) => {
       // console.log(user.accountCn,user.accountMail);
-      if (user.accountMail) {
+      if (user.accountMail && user.accountCn.indexOf("DESATIVADO") === -1) {
         // console.log("user.accountMail", user.accountMail);
         const searchUserKnowbe4 = new SearchUserKnowbe4();
         const userKnowbe4 = await searchUserKnowbe4.execute({
